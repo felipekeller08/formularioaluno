@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Questionário RIASEC - SENAI</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase (versão compat para facilitar) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- HEADER SIMPLES -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-circle">S</div>
+        <div class="brand-text">
+          <h1>RIASEC SENAI</h1>
+          <p>Descubra quais cursos combinam com você</p>
+        </div>
+      </div>
+      <div class="user-info" id="userInfo">
+        <!-- Preenchido via JS quando logado -->
+      </div>
+    </header>
+
+    <!-- ================== TELA DE LOGIN / CADASTRO ================== -->
+    <main id="authScreen" class="screen active">
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button id="tabLogin" class="auth-tab active">Entrar</button>
+          <button id="tabRegister" class="auth-tab">Criar conta</button>
+        </div>
+
+        <!-- LOGIN -->
+        <form id="loginForm" class="auth-form active">
+          <div class="form-group">
+            <label for="loginEmail">E-mail</label>
+            <input type="email" id="loginEmail" required />
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword">Senha</label>
+            <input type="password" id="loginPassword" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary">Entrar</button>
+
+          <button type="button" id="forgotPasswordBtn" class="link-button">
+            Esqueci minha senha
+          </button>
+        </form>
+
+        <!-- CADASTRO -->
+        <form id="registerForm" class="auth-form">
+          <div class="form-group">
+            <label for="registerName">Nome do aluno</label>
+            <input type="text" id="registerName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="registerEmail">E-mail</label>
+            <input type="email" id="registerEmail" required />
+          </div>
+
+          <div class="form-group">
+            <label for="registerPassword">Senha</label>
+            <input type="password" id="registerPassword" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary">Criar conta</button>
+        </form>
+      </div>
+
+      <!-- MODAL DE RESET DE SENHA -->
+      <div id="resetModal" class="modal hidden">
+        <div class="modal-content">
+          <h2>Redefinir senha</h2>
+          <p>Informe o e-mail usado no cadastro.</p>
+          <div class="form-group">
+            <label for="resetEmail">E-mail</label>
+            <input type="email" id="resetEmail" />
+          </div>
+          <div class="modal-actions">
+            <button id="sendResetLink" class="btn btn-primary">Enviar link</button>
+            <button id="closeResetModal" class="btn btn-secondary">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ================== TELA DO QUESTIONÁRIO ================== -->
+    <main id="quizScreen" class="screen">
+      <!-- Barra de progresso dos perfis -->
+      <section class="progress-bar">
+        <div class="progress-item" data-profile="1">1</div>
+        <div class="progress-item" data-profile="2">2</div>
+        <div class="progress-item" data-profile="3">3</div>
+        <div class="progress-item" data-profile="4">4</div>
+        <div class="progress-item" data-profile="5">5</div>
+        <div class="progress-item" data-profile="6">6</div>
+
+      </section>
+
+      <!-- Conteúdo do perfil atual -->
+      <section class="quiz-card">
+        <header class="quiz-header">
+          <div>
+            <p class="quiz-step" id="quizStep">Perfil 1 de 6</p>
+            <h2 id="profileTitle"></h2>
+            <p id="profileDescription" class="quiz-description">
+              
+            </p>
+          </div>
+        </header>
+        <p class="scale-top">
+            0 = Nada a ver | 1 = Pouco | 2 = Parcialmente | 3 = Bastante | 4 = Totalmente
+        </p>
+        <form id="questionsForm" class="questions-list">
+          <!-- Perguntas geradas via JS -->
+        </form>
+
+        <footer class="quiz-footer">
+          <button id="nextProfileBtn" class="btn btn-primary">Salvar e avançar</button>
+        </footer>
+      </section>
+    </main>
+
+    <!-- ================== TELA DE RESULTADO ================== -->
+    <main id="resultScreen" class="screen">
+      <section class="result-card">
+        <h2>Seu resultado</h2>
+        <p id="resultSummary">
+          Carregando...
+        </p>
+
+        <div class="result-grid" id="scoresGrid">
+          <!-- Pontuações por perfil via JS -->
+        </div>
+
+        <section class="courses-section">
+          <h3>Cursos que combinam com você</h3>
+          <ul id="coursesList" class="courses-list">
+            <!-- Recomendações via JS -->
+          </ul>
+        </section>
+
+        <div class="result-actions">
+          <button id="redoQuizBtn" class="btn btn-secondary">Refazer questionário</button>
+          <button id="logoutFromResultBtn" class="btn btn-outline">Sair</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Toast simples para mensagens -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
