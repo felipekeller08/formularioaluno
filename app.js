@@ -107,6 +107,8 @@ const SCORE_SCALE = [
 // Estado do quiz
 let currentProfileIndex = 0;
 let answers = {}; // { R: [0,1,2,3], I: [...] }
+let graficoResultadoAluno = null;
+
 
 // ========== 3. ELEMENTOS DA INTERFACE ==========
 
@@ -134,7 +136,6 @@ const nextProfileBtn = document.getElementById("nextProfileBtn");
 
 // Result
 const resultSummary = document.getElementById("resultSummary");
-const scoresGrid = document.getElementById("scoresGrid");
 const coursesList = document.getElementById("coursesList");
 const redoQuizBtn = document.getElementById("redoQuizBtn");
 const logoutFromResultBtn = document.getElementById("logoutFromResultBtn");
@@ -299,21 +300,8 @@ function showResultScreen(scores) {
     .map((p) => `${p.name} (${p.id})`)
     .join(" e ");
 
-  resultSummary.textContent = `Seu(s) perfil(is) com maior pontuação (${maxScore}) foi(foram): ${bestNames}.`;
-
-  scoresGrid.innerHTML = "";
-  profiles.forEach((p) => {
-    const div = document.createElement("div");
-    div.className = "profile-score";
-   const profileNumber = profiles.indexOf(p) + 1;
-
-   div.innerHTML = `
-  <h4>Perfil ${profileNumber}</h4>
-  <p>Pontuação: <strong>${scores[p.id]}</strong></p>
-`;
-
-    scoresGrid.appendChild(div);
-  });
+  resultSummary.textContent =
+    `Seu(s) perfil(is) com maior pontuação (${maxScore}) foi(foram): ${bestNames}.`;
 
   coursesList.innerHTML = "";
   if (courses.length === 0) {
@@ -330,7 +318,12 @@ function showResultScreen(scores) {
   }
 
   showScreen(resultScreen);
+
+  setTimeout(() => {
+    gerarGraficoResultadoAluno(scores);
+  }, 100);
 }
+
 
 // ========== 5. FIRESTORE (SALVAR / CARREGAR) ==========
 
@@ -519,3 +512,65 @@ redoQuizBtn.addEventListener("click", () => {
   renderCurrentProfile();
   showScreen(quizScreen);
 });
+function gerarGraficoResultadoAluno(scores) {
+  const canvas = document.getElementById("graficoResultadoAluno");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  // Evita duplicar gráfico ao refazer questionário
+  if (graficoResultadoAluno) {
+    graficoResultadoAluno.destroy();
+  }
+
+  graficoResultadoAluno = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: [
+        "Realista",
+        "Investigativo",
+        "Artístico",
+        "Social",
+        "Empreendedor",
+        "Convencional"
+      ],
+      datasets: [{
+        label: "Pontuação",
+        data: [
+          scores.R,
+          scores.I,
+          scores.A,
+          scores.S,
+          scores.E,
+          scores.C
+        ],
+        backgroundColor: [
+          "#1f6fe5",
+          "#2f9be5",
+          "#53b8e8",
+          "#ffb020",
+          "#ff8a00",
+          "#e65100"
+        ],
+        borderRadius: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 2
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
+}
