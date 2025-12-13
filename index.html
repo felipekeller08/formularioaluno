@@ -138,9 +138,10 @@
           Carregando...
         </p>
 
-        <div class="result-grid" id="scoresGrid">
-          <!-- Pontuações por perfil via JS -->
+        <div class="result-chart">
+          <canvas id="graficoResultadoAluno"></canvas>
         </div>
+
 
         <section class="courses-section">
           <h3>Cursos que combinam com você</h3>
@@ -159,7 +160,7 @@
     <!-- Toast simples para mensagens -->
     <div id="toast" class="toast hidden"></div>
   </div>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
